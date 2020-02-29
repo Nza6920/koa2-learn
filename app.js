@@ -6,6 +6,12 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
+// 自定义 middleware
+const pv = require('./middleware/koa-pv')
+const m1 = require('./middleware/m1')
+const m2 = require('./middleware/m2')
+const m3 = require('./middleware/m3')
+
 // mongodb
 const dbConfig = require('./dbs/config')
 const mongoose = require('mongoose')
@@ -20,11 +26,21 @@ const users = require('./routes/users')
 // error handler
 onerror(app)
 
+
 // 配置session
 app.keys=['keys', 'keyskeys']
 app.use(session({
+    key: 'mt',
+    prefix: 'mtpr',
     store: new Redis()
 }))
+
+// 使用自定义middleware
+app.use(pv())
+app.use(m1())
+app.use(m2())
+app.use(m3())
+
 
 // middlewares
 app.use(bodyparser({
